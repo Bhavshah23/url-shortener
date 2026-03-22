@@ -21,8 +21,13 @@ router.post("/shorten", async (req, res) => {
 
 // Get all URLs
 router.get("/all", async (req, res) => {
-  const urls = await Url.find();
-  res.json(urls);
+  try {
+    const urls = await Url.find();
+    res.json(urls);
+  } catch (error) {
+    console.error("ERROR IN /all:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;

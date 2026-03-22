@@ -12,8 +12,12 @@ app.use(express.json());
 app.use("/api/url", urlRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+  .then(() => {
+    console.log("✅ MongoDB Connected");
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB Error:", err);
+  });
 
 app.get("/", (req, res) => {
   res.send("API Running");
