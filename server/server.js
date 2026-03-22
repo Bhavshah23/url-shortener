@@ -1,3 +1,4 @@
+require("dotenv").config();
 const urlRoutes = require("./routes/urlRoutes");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -10,7 +11,7 @@ app.use(express.json());
 
 app.use("/api/url", urlRoutes);
 
-mongoose.connect("mongodb+srv://bhavbshah23_db_user:eoVu2V4XJ9pEfolD@cluster0.wgzmsx2.mongodb.net/?appName=Cluster0")
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
