@@ -19,4 +19,10 @@ router.post("/shorten", async (req, res) => {
   });
 });
 
+// Get all URLs
+router.get("/all", async (req, res) => {
+  const urls = await Url.find();
+  res.json(urls);
+});
+
 module.exports = router;
