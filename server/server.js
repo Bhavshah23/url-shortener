@@ -26,18 +26,24 @@ app.get("/", (req, res) => {
 const Url = require("./models/Url");
 
 app.get("/:shortCode", async (req, res) => {
-  const url = await Url.findOne({ shortCode: req.params.shortCode });
+  try {
+    const url = await Url.findOne({ shortCode: req.params.shortCode });
 
-  if (url) {
-    url.clicks++;
-    await url.save();
-
-    return res.redirect(url.originalUrl);
-  } else {
-    return res.status(404).send("URL not found");
+    if (url) {
+      url.clicks++;
+      await url.save();
+      return res.redirect(url.originalUrl);
+    } else {
+      return res.status(404).send("URL not found");
+    }
+  } catch (error) {
+    console.error("Redirect error:", error);
+    res.status(500).send("Server error");
   }
 });
 
-app.listen(8000, () => {
-  console.log("Server running on port 8000");
+const PORT = process.env.PORT || 8000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
