@@ -1,3 +1,4 @@
+const urlRoutes = require("./routes/urlRoutes");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -6,6 +7,8 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/url", urlRoutes);
 
 mongoose.connect("mongodb+srv://bhavbshah23_db_user:eoVu2V4XJ9pEfolD@cluster0.wgzmsx2.mongodb.net/?appName=Cluster0")
   .then(() => console.log("MongoDB Connected"))
