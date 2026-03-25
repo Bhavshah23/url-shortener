@@ -8,6 +8,7 @@ function App() {
   const [shortUrl, setShortUrl] = useState("");
   const [allUrls, setAllUrls] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [copyIndex, setCopyIndex] = useState(null);
 
   const fetchUrls = async () => {
     try {
@@ -22,9 +23,20 @@ function App() {
   };
 
   const handleSubmit = async () => {
-    if (!url) return alert("Please enter a URL");
+    // ✅ VALIDATION
+    if (!url) {
+      alert("Please enter a URL");
+      return;
+    }
+
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      alert("Enter a valid URL (must start with http/https)");
+      return;
+    }
 
     try {
+      setLoading(true);
+
       const res = await axios.post(`${BASE_URL}/api/url/shorten`, {
         originalUrl: url,
       });
@@ -35,7 +47,18 @@ function App() {
     } catch (err) {
       console.error("Shorten error:", err);
       alert("Something went wrong");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleCopy = (code, index) => {
+    navigator.clipboard.writeText(`${BASE_URL}/${code}`);
+    setCopyIndex(index);
+
+    setTimeout(() => {
+      setCopyIndex(null);
+    }, 1500);
   };
 
   useEffect(() => {
@@ -61,10 +84,10 @@ function App() {
 
         <button
           onClick={handleSubmit}
+          disabled={loading}
           className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
-          disabled={!url}
         >
-          Shorten URL
+          {loading ? "Shortening..." : "Shorten URL"}
         </button>
 
         {shortUrl && (
@@ -118,15 +141,10 @@ function App() {
               </p>
 
               <button
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${BASE_URL}/${u.shortCode}`
-                  );
-                  alert("Copied!");
-                }}
+                onClick={() => handleCopy(u.shortCode, index)}
                 className="mt-2 bg-gray-200 px-3 py-1 rounded hover:bg-gray-300 text-sm"
               >
-                Copy
+                {copyIndex === index ? "Copied!" : "Copy"}
               </button>
 
               <p className="text-sm mt-2">
