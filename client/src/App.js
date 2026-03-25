@@ -61,6 +61,18 @@ function App() {
     }, 1500);
   };
 
+  const handleDelete = async (id) => {
+  try {
+    await axios.delete(`${BASE_URL}/api/url/${id}`);
+
+    // remove from UI instantly
+    setAllUrls((prev) => prev.filter((u) => u._id !== id));
+  } catch (err) {
+    console.error("Delete error:", err);
+    alert("Failed to delete");
+  }
+};
+
   useEffect(() => {
     fetchUrls();
   }, []);
@@ -154,6 +166,13 @@ function App() {
               <p className="text-sm mt-1">
                 <b>Clicks:</b> {u.clicks}
               </p>
+
+              <button
+  onClick={() => handleDelete(u._id)}
+  className="mt-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
+>
+  Delete
+</button>
             </div>
           ))}
       </div>
