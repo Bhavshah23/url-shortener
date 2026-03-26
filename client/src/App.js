@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const BASE_URL = "https://url-shortener-d23b.onrender.com";
-
+//const BASE_URL = "https://url-shortener-d23b.onrender.com";
+const BASE_URL = "http://localhost:8000"; 
 function App() {
   const [url, setUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [allUrls, setAllUrls] = useState([]);
   const [loading, setLoading] = useState(false);
   const [copyIndex, setCopyIndex] = useState(null);
+  const [customCode, setCustomCode] = useState("");
 
   const fetchUrls = async () => {
     try {
@@ -36,13 +37,15 @@ function App() {
 
     try {
       setLoading(true);
-
-      const res = await axios.post(`${BASE_URL}/api/url/shorten`, {
-        originalUrl: url,
-      });
+      console.log("Sending:", url, customCode);
+    const res = await axios.post(`${BASE_URL}/api/url/shorten`, {
+  originalUrl: url,
+  customCode: customCode,
+});
 
       setShortUrl(res.data.shortUrl);
       setUrl("");
+      setCustomCode("");
       fetchUrls();
     } catch (err) {
       console.error("Shorten error:", err);
@@ -93,6 +96,13 @@ function App() {
           onChange={(e) => setUrl(e.target.value)}
           className="w-full border p-2 rounded mb-3"
         />
+        <input
+  type="text"
+  placeholder="Custom short code (optional)"
+  value={customCode}
+  onChange={(e) => setCustomCode(e.target.value)}
+  className="w-full border p-2 rounded mb-3"
+/>
 
         <button
           onClick={handleSubmit}

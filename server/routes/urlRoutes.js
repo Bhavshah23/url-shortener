@@ -5,14 +5,33 @@ const Url = require("../models/Url");
 // 🔹 SHORTEN URL
 router.post("/shorten", async (req, res) => {
   try {
-    const { originalUrl } = req.body;
+    console.log("BODY:", req.body);
+    const { originalUrl, customCode } = req.body;
 
-    const shortCode = Math.random().toString(36).substring(2, 8);
+    let shortCode;
+
+    if (customCode) {
+      shortCode = customCode;
+    } else {
+      shortCode = Math.random().toString(36).substring(2, 8);
+    }
+
+    const existing = await Url.findOne({ shortCode });
+
+if (existing) {
+  return res.status(400).json({ error: "Short code already exists" });
+}
 
     const newUrl = new Url({
-      originalUrl,
-      shortCode,
-    });
+  originalUrl,
+  shortCode,
+});
+
+console.log("Saving:", originalUrl, shortCode);
+
+await newUrl.save();
+
+console.log("Saved successfully");
 
     await newUrl.save();
 
@@ -27,6 +46,7 @@ router.post("/shorten", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 
 // 🔹 GET ALL URLS
