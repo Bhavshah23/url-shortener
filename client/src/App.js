@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-//const BASE_URL = "https://url-shortener-d23b.onrender.com";
-const BASE_URL = "http://localhost:8000"; 
+const BASE_URL = "https://url-shortener-d23b.onrender.com";
+// const BASE_URL = "http://localhost:8000"; 
 function App() {
   const [url, setUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
